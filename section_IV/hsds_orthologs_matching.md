@@ -22,7 +22,6 @@ library(ggbiplot)
 
 # Convert from loom to Seurat:
 mouse.loom <- Connect(filename="mouse_data/dev_all.loom", mode="r")
-#mouse.sc <- as.Seurat(mouse.loom) # this is giving an error so will extract manually
 mouse.counts <- mouse.loom[["matrix"]][,] # full gene x cell count table
 dim(mouse.counts) # 292495 cells x 31053 genes
 colnames(mouse.counts) <- make.unique(mouse.loom[["row_attrs"]][["Gene"]][],sep = "-") # gene names as columns
