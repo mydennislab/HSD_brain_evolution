@@ -365,7 +365,7 @@ awk '{print $1":"$2"-"$3"\t"$4"\t"$5}' CD8B2_fully_covered.tsv | xargs -n3 -P1 b
 samtools consensus -m simple -r chr2:86825000-86850000 -f fasta pantro6.CD8B.bam | sed "s/>chr2/>pantro6/g" > ../pantro6_CD8B_window.fa
 ```
 
-### 4.2. CD8B Tajima's D 
+### 4.2 CD8B Tajima's D 
 
 ```bash
 cd /share/dennislab/users/dcsoto/ms_hsd/phsds/hprc_hgsvc_extended
