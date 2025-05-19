@@ -541,3 +541,23 @@ awk '$2 ~ /chrY:/' chm13v2.0.genes.sd98.tsv > chm13v2.0.genes.sd98.chrY.tsv
 cut -f1 chm13v2.0.genes.sd98.chrY.tsv | sort | uniq | wc -l # 503
 cut -f1 chm13v2.0.genes.sd98.chrY.tsv | sort | uniq | grep "protein_coding\|unprocessed_pseudogene\|unknown_likely_coding" | wc -l # 326
 ```
+
+## 9. Novel/fixed SD98 genes in T2T-CHM13
+
+```bash
+bedtools intersect -wao -a sd98_genes.bed -b hg38_nonsyntenic.chm13_coords.bed \
+| cut -f1-4,8 \
+> sd98_genes.non_syntenic.bed
+
+bedtools intersect -wao -a sd98_genes.bed -b hg38_collapsed_dups.chm13_coords.bed \
+| cut -f1-4,8 \
+| bedtools groupby -g 1,2,3,4 -c 5 -o sum \
+> sd98_genes.collapsed_dups.bed
+
+bedtools intersect -wao -a sd98_genes.bed -b hg38_false_dups.chm13_coords.bed \
+| cut -f1-4,8 \
+| bedtools groupby -g 1,2,3,4 -c 5 -o sum \
+> sd98_genes.false_dups.bed
+```
+
+> Medically relevant gene coordinates extracted from https://raw.githubusercontent.com/usnistgov/cmrg-benchmarkset-manuscript/refs/heads/master/data/gene_coords/unsorted/GRCh38_mrg_full_gene.bed. Original paper: https://www.nature.com/articles/s41587-021-01158-1
