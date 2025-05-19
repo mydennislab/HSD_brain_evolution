@@ -1,6 +1,6 @@
 # Gene expansions contributing to human brain evolution
 
-This repository contains all scripts and intermediate files for all the analyses included in **reference**.
+This repository contains all scripts and intermediate files for all the analyses included in *reference pending*.
 
 The analyses were divided based on the sections of the manuscript as follows:
 
@@ -12,4 +12,4 @@ The analyses were divided based on the sections of the manuscript as follows:
 - Section VI: Duplicated gene functions modeled using zebrafish
 - Section VII: Novel human-specific genes impacting neurodevelopment
 
-Each Section folder includes all scripts and files necesseary for running them. Raw sequencing files are found in **SRA project ID**.
+Each Section folder includes all scripts and files necesseary for running them. Raw sequencing files are found in *SRA project ID pending*.
