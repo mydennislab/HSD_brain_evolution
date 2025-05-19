@@ -229,3 +229,280 @@ awk '{print $1":"$2"-"$3"\t"$4"\t"$5"\t"$6}' ../../coords/pHSDs_txs.SD.fix.bed |
   | grep "HIGH\|MODERATE\|LOW"
 ' > high_moderate_low_vep_biallelic.txt
 ```
+
+## 4. CD8B balancing selection analysis
+
+### 4.1 Haplotype networks
+
+## Haplotype Network
+
+Colors:
+* AFR <- "#EDA93A"
+* EUR <- "#3F53A4"
+* EAS <- "#417F3C"
+* SAS <- "#73297C"
+* AMR <- "#E13126"
+
+Mapping PanTro6 to reference:
+```bash
+cd /share/dennislab/users/dcsoto/ms_hsd/phsds/hprc_hgsvc/99_CD8B/pantro6
+
+conda activate variants
+
+minimap2 -t 32 -a --eqx --cs -x asm5 --secondary=no -s 25000 -K 8G /share/dennislab/users/dcsoto/ms_hsd/phsds/hprc_hgsvc/00_reference/chm13.draft_v1.0.plusY.fasta panTro6.fa | samtools view -@ 4 -Sb | samtools sort -@ 4 > pantro6.CD8B.bam
+samtools index pantro6.CD8B.bam
+```
+
+```bash
+# CD8B network 1 
+# chr2:86824967-86844966
+mkdir network1
+ls ../02_alignments_pHSDs/*CD8B.paf.filt.bam | xargs -n1 -P20 bash -c '
+    sample=$(basename -s .CD8B.paf.filt.bam $0)
+    echo $sample
+    samtools consensus -m simple -r chr2:86824967-86844966 -f fasta $0 | sed "s/>chr2/>"$sample"/g" > network1/${sample}_CD8B_network1.fa
+'
+
+samtools consensus -m simple -r chr2:86824967-86844966 -f fasta pantro6/pantro6.CD8B.bam | sed "s/>chr2/>pantro6/g" > network1/pantro6_CD8B_network1.fa
+cat network1/*_CD8B_network1.fa > network1/all.CD8B_network1.fa
+
+# CD8B network 2
+# chr2:86827380-86833378
+mkdir network2
+ls ../02_alignments_pHSDs/*CD8B.paf.filt.bam | xargs -n1 -P20 bash -c '
+    sample=$(basename -s .CD8B.paf.filt.bam $0)
+    echo $sample
+    samtools consensus -m simple -r chr2:86827380-86833378 -f fasta $0 | sed "s/>chr2/>"$sample"/g" > network2/${sample}_CD8B_network2.fa
+'
+
+samtools consensus -m simple -r chr2:86827380-86833378 -f fasta pantro6/pantro6.CD8B.bam | sed "s/>chr2/>pantro6/g" > network2/pantro6_CD8B_network2.fa
+cat network2/*_CD8B_network2.fa > network2/all.CD8B_network2.fa
+
+# CD8B network 3
+# chr2:86865880-86871878
+mkdir network3
+ls ../02_alignments_pHSDs/*CD8B.paf.filt.bam | xargs -n1 -P20 bash -c '
+    sample=$(basename -s .CD8B.paf.filt.bam $0)
+    echo $sample
+    samtools consensus -m simple -r chr2:86865880-86871878 -f fasta $0 | sed "s/>chr2/>"$sample"/g" > network3/${sample}_CD8B_network3.fa
+'
+
+samtools consensus -m simple -r chr2:86865880-86871878 -f fasta pantro6/pantro6.CD8B.bam | sed "s/>chr2/>pantro6/g" > network3/pantro6_CD8B_network3.fa
+cat network3/*_CD8B_network3.fa > network3/all.CD8B_network3.fa
+
+# CD8B network 4
+# chr2:86845128-86851128
+mkdir network4
+ls ../02_alignments_pHSDs/*CD8B.paf.filt.bam | xargs -n1 -P20 bash -c '
+    sample=$(basename -s .CD8B.paf.filt.bam $0)
+    echo $sample
+    samtools consensus -m simple -r chr2:86845128-86851128 -f fasta $0 | sed "s/>chr2/>"$sample"/g" > network4/${sample}_CD8B_network4.fa
+'
+
+samtools consensus -m simple -r chr2:86845128-86851128 -f fasta pantro6/pantro6.CD8B.bam | sed "s/>chr2/>pantro6/g" > network4/pantro6_CD8B_network4.fa
+cat network4/*_CD8B_network4.fa > network4/all.CD8B_network4.fa
+```
+
+Merging all sequences in CD8B positive Tajima's D window:
+
+```bash
+cat *_CD8B_window.fa > all.CD8B_window.fa
+```
+
+CD8B and CD8B2 coordinates:
+- CD8B: chr2:86840067-86863799
+- CD8B2: chr2:106948802-106972551
+- CD8B positive Taj D window: chr2:86825000-86850000
+
+- CD8B: 	
+CD8B chr2 86822879 86847878
+
+```bash
+cd /share/dennislab/users/dcsoto/ms_hsd/phsds/hprc_hgsvc/99_CD8B
+
+module load samtools/1.15.1
+
+ls ../02_alignments_pHSDs/*CD8B.paf.filt.bam | xargs -n1 -P20 bash -c '
+    sample=$(basename -s .CD8B.paf.filt.bam $0)
+    echo $sample
+    samtools consensus -m simple -r chr2:86840067-86863799 -f fasta $0 | sed "s/>chr2/>"$sample"/g" > ${sample}_CD8B.fa
+'
+
+ls ../02_alignments_pHSDs/*CD8B2.paf.filt.bam | xargs -n1 -P20 bash -c '
+    sample=$(basename -s .CD8B2.paf.filt.bam $0)
+    echo $sample
+    samtools consensus -m simple -r chr2:106948802-106972551 -f fasta $0 | sed "s/>chr2/>"$sample"/g" > ${sample}_CD8B2.fa
+'
+
+
+ls ../02_alignments_pHSDs/*CD8B.paf.filt.bam | xargs -n1 -P20 bash -c '
+    sample=$(basename -s .CD8B.paf.filt.bam $0)
+    echo $sample
+    samtools consensus -m simple -r chr2:86825000-86850000 -f fasta $0 | sed "s/>chr2/>"$sample"/g" > ${sample}_CD8B_window.fa
+'
+```
+
+We generated a multi-fasta file from individuals containing a contig fully covering CD8B and CD8B2:
+
+```bash
+grep -w "CD8B" ../../hprc_hgsvc/pHSDs_regions.fully_covered.SD.tsv > CD8B_fully_covered.tsv
+grep -w "CD8B2" ../../hprc_hgsvc/pHSDs_regions.fully_covered.SD.tsv > CD8B2_fully_covered.tsv
+
+awk '{print $1":"$2"-"$3"\t"$4"\t"$5}' CD8B_fully_covered.tsv | xargs -n3 -P1 bash -c '
+    echo "Locus: "$1
+
+    fastas=$(for i in $(echo $2 | sed "s/,/ /g"); do printf $i".1_${1}.fa "$i".2_${1}.fa "; done)
+    cat $fastas > all.$1.fa
+'
+
+awk '{print $1":"$2"-"$3"\t"$4"\t"$5}' CD8B2_fully_covered.tsv | xargs -n3 -P1 bash -c '
+    echo "Locus: "$1
+
+    fastas=$(for i in $(echo $2 | sed "s/,/ /g"); do printf $i".1_${1}.fa "$i".2_${1}.fa "; done)
+    cat $fastas > all.$1.fa
+'
+```
+
+```bash
+samtools consensus -m simple -r chr2:86825000-86850000 -f fasta pantro6.CD8B.bam | sed "s/>chr2/>pantro6/g" > ../pantro6_CD8B_window.fa
+```
+
+### 4.2. CD8B Tajima's D 
+
+```bash
+cd /share/dennislab/users/dcsoto/ms_hsd/phsds/hprc_hgsvc_extended
+```
+
+Separating populations:
+```bash
+conda activate variants
+
+for pop in AFR EUR EAS SAS AMR; do
+    cat 05_merged_VCFs_pHSDs/CD8B.SNPs.biallelic.vcf.gz \
+    | bcftools view -S hprc_${pop}.tsv --force-samples \
+    | bcftools +fill-tags - -- -t AN,AC,AF \
+    | bcftools view -c1 \
+    | bcftools view -i 'F_MISSING<0.1' \
+    | bgzip -c \
+    > 05_merged_VCFs_pHSDs/CD8B.SNPs.biallelic.${pop}.vcf.gz 
+    tabix -f 05_merged_VCFs_pHSDs/CD8B.SNPs.biallelic.${pop}.vcf.gz 
+done
+
+for pop in AFR EUR EAS SAS AMR; do
+    cat 05_merged_VCFs_pHSDs/CD8B2.SNPs.biallelic.vcf.gz \
+    | bcftools view -S hprc_${pop}.tsv --force-samples \
+    | bcftools +fill-tags - -- -t AN,AC,AF \
+    | bcftools view -c1 \
+    | bcftools view -i 'F_MISSING<0.1' \
+    | bgzip -c \
+    > 05_merged_VCFs_pHSDs/CD8B2.SNPs.biallelic.${pop}.vcf.gz 
+    tabix -f 05_merged_VCFs_pHSDs/CD8B2.SNPs.biallelic.${pop}.vcf.gz 
+done
+
+# mid frequency variants CD8B
+bcftools view -i 'AF>0.4 && AF<0.6' 05_merged_VCFs_pHSDs/CD8B.SNPs.biallelic.AFR.vcf.gz -Oz -o CD8B.SNPs.biallelic.AFR.maf_0.4.vcf.gz
+bcftools view -i 'AF>0.3 && AF<0.7' 05_merged_VCFs_pHSDs/CD8B.SNPs.biallelic.AFR.vcf.gz -Oz -o CD8B.SNPs.biallelic.AFR.maf_0.3.vcf.gz 
+
+bcftools view -i 'AF>0.4 && AF<0.6' 05_merged_VCFs_pHSDs/CD8B.SNPs.biallelic.AMR.vcf.gz -Oz -o CD8B.SNPs.biallelic.AMR.maf_0.4.vcf.gz
+bcftools view -i 'AF>0.3 && AF<0.7' 05_merged_VCFs_pHSDs/CD8B.SNPs.biallelic.AMR.vcf.gz -Oz -o CD8B.SNPs.biallelic.AMR.maf_0.3.vcf.gz 
+
+# mid frequency variants CD8B2
+bcftools view -i 'AF>0.3 && AF<0.7' 05_merged_VCFs_pHSDs/CD8B2.SNPs.biallelic.AFR.vcf.gz -Oz -o CD8B2.SNPs.biallelic.AFR.maf_0.3.vcf.gz 
+bcftools view -i 'AF>0.3 && AF<0.7' 05_merged_VCFs_pHSDs/CD8B2.SNPs.biallelic.AMR.vcf.gz -Oz -o CD8B2.SNPs.biallelic.AMR.maf_0.3.vcf.gz 
+```
+
+Tajima's D calculations per population and overall:
+```r
+# module load R/4.3.1
+library(PopGenome)
+library(data.table)
+library(tidyverse)
+
+regions <- fread("pHSDs_regions.fully_covered.bed", col.names = c("chr", "start", "end", "locus", "samples"), header = F, sep = "\t")
+regions <- regions[,1:4]
+regions <- regions[regions$locus %in% c("CD8B","CD8B2"),]
+
+# Per population
+
+results <- data.frame(
+  locus = character(),
+  d = numeric(),
+  population = character(),
+  stringsAsFactors = FALSE
+)
+windows <- data.frame()
+
+for(pop in c("AFR", "EUR", "SAS", "EAS", "AMR")){
+    for(i in 1:nrow(regions)) {
+        chr = regions[i,1][[1]]
+        start = regions[i,2][[1]]
+        end = regions[i,3][[1]]
+        locus = regions[i,4][[1]]
+
+        # overall pi
+        GENOME.class <- readVCF(paste("05_merged_VCFs_pHSDs/",locus,".SNPs.biallelic.",pop,".vcf.gz", sep = ""), 
+                                tid=chr, from=start, to=end, numcols=10000000)
+        GENOME.class <- neutrality.stats(GENOME.class)
+
+        df1 <- data.frame(
+            locus = locus, 
+            d =  as.vector(GENOME.class@Tajima.D),
+            population = pop) 
+        print(df1)
+        results <- rbind(results, df1)
+
+        # sliding window
+        GENOME.class.slide <- sliding.window.transform(GENOME.class, width=6000, jump=500, type=2, whole.data=TRUE)
+        GENOME.class.slide <- neutrality.stats(GENOME.class.slide)
+        
+        df2 <- data.frame(
+            locus = locus,
+            regions = GENOME.class.slide@region.names, 
+            d = as.vector(GENOME.class.slide@Tajima.D),
+            population = pop
+        )    
+        windows <- rbind(windows, df2)
+    }    
+}
+
+fwrite(results, "extended.hprc_hgsvc.overall_tajimad.CD8B_per_pop.tsv", quote = FALSE,  sep = "\t", row.names = FALSE, col.names = FALSE)
+fwrite(windows, "extended.hprc_hgsvc.windows_tajimad.CD8B_per_pop.tsv", quote = FALSE,  sep = "\t", row.names = FALSE, col.names = FALSE)
+
+# All populations
+results <- data.frame()
+windows <- data.frame()
+
+for(i in 1:nrow(regions)) {
+    chr = regions[i,1][[1]]
+    start = regions[i,2][[1]]
+    end = regions[i,3][[1]]
+    locus = regions[i,4][[1]]
+
+    # overall pi
+    GENOME.class <- readVCF(paste("05_merged_VCFs_pHSDs/",locus,".SNPs.biallelic.vcf.gz", sep = ""), 
+                            tid=chr, from=start, to=end, numcols=10000000)
+    GENOME.class <- neutrality.stats(GENOME.class)
+
+    df1 <- data.frame(
+        locus = locus, 
+        pi =  as.vector(GENOME.class@Tajima.D)) 
+    results <- rbind(results, df1)
+
+    # sliding window
+    GENOME.class.slide <- sliding.window.transform(GENOME.class, width=6000, jump=500, type=2, whole.data=TRUE)
+    GENOME.class.slide <- neutrality.stats(GENOME.class.slide)
+    
+    df2 <- data.frame(
+        locus = locus,
+        regions = GENOME.class.slide@region.names, 
+        pi = as.vector(GENOME.class.slide@Tajima.D)
+    )    
+    windows <- rbind(windows, df2)
+
+    #GENOME.class.slide <- diversity.stats(GENOME.class.slide, pi = TRUE)
+    #GENOME.class.slide@nuc.diversity.within
+}
+
+fwrite(results, "extended.hprc_hgsvc.overall_tajimad.CD8B_all_pops.tsv", quote = FALSE,  sep = "\t", row.names = FALSE, col.names = FALSE)
+fwrite(windows, "extended.hprc_hgsvc.windows_tajimad.CD8B_all_pops.tsv", quote = FALSE,  sep = "\t", row.names = FALSE, col.names = FALSE)
+```
