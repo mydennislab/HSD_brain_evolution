@@ -307,13 +307,7 @@ Merging all sequences in CD8B positive Tajima's D window:
 cat *_CD8B_window.fa > all.CD8B_window.fa
 ```
 
-CD8B and CD8B2 coordinates:
-- CD8B: chr2:86840067-86863799
-- CD8B2: chr2:106948802-106972551
-- CD8B positive Taj D window: chr2:86825000-86850000
-
-- CD8B: 	
-CD8B chr2 86822879 86847878
+- CD8B 1KGP positive Taj D window (T2T-CHM13v1.0): chr2:86825000-86850000
 
 ```bash
 cd /share/dennislab/users/dcsoto/ms_hsd/phsds/hprc_hgsvc/99_CD8B
@@ -331,7 +325,6 @@ ls ../02_alignments_pHSDs/*CD8B2.paf.filt.bam | xargs -n1 -P20 bash -c '
     echo $sample
     samtools consensus -m simple -r chr2:106948802-106972551 -f fasta $0 | sed "s/>chr2/>"$sample"/g" > ${sample}_CD8B2.fa
 '
-
 
 ls ../02_alignments_pHSDs/*CD8B.paf.filt.bam | xargs -n1 -P20 bash -c '
     sample=$(basename -s .CD8B.paf.filt.bam $0)
