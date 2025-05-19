@@ -1,4 +1,4 @@
-# Running QuickMer2 (Dani's version)
+# Running QuickMer2
 
 QuickMer2 is a tool developed by the Kidd Lab that calculates paralog-specific copy-number based on unique k-mers.
 
