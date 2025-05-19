@@ -234,8 +234,6 @@ awk '{print $1":"$2"-"$3"\t"$4"\t"$5"\t"$6}' ../../coords/pHSDs_txs.SD.fix.bed |
 
 ### 4.1 Haplotype networks
 
-## Haplotype Network
-
 Colors:
 * AFR <- "#EDA93A"
 * EUR <- "#3F53A4"
