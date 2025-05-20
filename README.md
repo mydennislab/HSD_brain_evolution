@@ -12,4 +12,4 @@ The analyses were divided based on the sections of the manuscript as follows:
 - Section VI: Duplicated gene functions modeled using zebrafish
 - Section VII: Novel human-specific genes impacting neurodevelopment
 
-Each Section folder includes all scripts and files necesseary for running them. Raw sequencing files are found in ENA project *PRJEB82358*.
+Each Section folder includes all scripts and files necesseary for running them. Raw sequencing files are found in ENA project ```PRJEB82358```.
