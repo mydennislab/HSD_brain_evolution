@@ -293,60 +293,6 @@ for gq in 0 20 50 70; do
 done | tr -s " " | cut -d" " -f1,2,3,4,6,12 | sed 's/://g' | sed "s/(//g" | sed "s/)//g" > mendelian_concordance.tsv
 ```
 
-#### 2.3.4 HG002
-
-We compared variants from cHiFi joint genotyping to HPRC variants for individual HG002.
-
-```bash
-conda activate vcfeval
-
-# all regions
-awk '{print $1":"$2"-"$3"\t"$4"\t"$5}' /share/dennislab/projects/hsd_genes/T2T/regions/intended_capture.t2t.fix.bed | sed 's/;/_/g' | xargs -n2 -P22 bash -c '
-echo "Locus: "$1
-  for gq in 0 20 50 70; do
-    for dp in 0 4 8 12 16; do
-      for mapq in 1 2 5 10 20; do
-        for conf in 0 10 20 30; do
-          rtg vcfeval \
-          --sample="HG002_HPRC","NA24385" \
-          --region=$0 \
-          --baseline /share/dennislab/users/dcsoto/ms_hsd/phsds/hprc_hgsvc/07_merged_VCFs_pHSDs/$1.bisnps.all.vcf.gz \
-          --calls ../02_filtering/cohort_200.MAPQ_${mapq}.genotypes_${conf}.norm.snps.filt_${gq}_${dp}.biallelic.vcf.gz \
-          -t chm13.draft_v1.0.noalt_SDF \
-          -o vcfeval_all/$1_MAPQ${mapq}_CONF${conf}_DP${dp}_GQ${gq}
-        done
-      done
-    done
-  done   
-'
-
-# SD only
-awk '{print $1":"$2"-"$3"\t"$4"\t"$5}' /share/dennislab/projects/hsd_genes/T2T/regions/intended_capture.t2t.fix.SDs.bed | sed 's/;/_/g' | xargs -n2 -P22 bash -c '
-echo "Locus: "$1
-  for gq in 0 20 50 70; do
-    for dp in 0 4 8 12 16; do
-      for mapq in 1 2 5 10 20; do
-        for conf in 0 10 20 30; do
-          rtg vcfeval \
-          --sample="HG002_HPRC","NA24385" \
-          --region=$0 \
-          --baseline /share/dennislab/users/dcsoto/ms_hsd/phsds/hprc_hgsvc/07_merged_VCFs_pHSDs/$1.bisnps.all.vcf.gz \
-          --calls ../02_filtering/cohort_200.MAPQ_${mapq}.genotypes_${conf}.norm.snps.filt_${gq}_${dp}.biallelic.vcf.gz \
-          -t t2t-chm13v1.0.noalt_SDF \
-          -o vcfeval_SD/$1_MAPQ${mapq}_CONF${conf}_DP${dp}_GQ${gq}
-        done
-      done
-    done
-  done   
-'
-
-find vcfeval_all -name summary.txt | xargs -i bash -c "echo {}; cat {}" | grep -v '^-\|^Th' | grep '^vcfeval\|None\|available' | awk '{c="\n"} NR%2 {c=" "} {printf("%s%s", $0, c)}' | tr -s ' ' | sed 's/\/summary.txt//g' > summary_vcfeval_all.tsv
-cat text_to_replace.tsv | xargs -n2 -P1 bash -c 'echo $0; sed -i "s/$0/$1/g" summary_vcfeval_all.tsv'
-
-find vcfeval_SD -name summary.txt | xargs -i bash -c "echo {}; cat {}" | grep -v '^-\|^Th' | grep '^vcfeval\|None\|available' | awk '{c="\n"} NR%2 {c=" "} {printf("%s%s", $0, c)}' | tr -s ' ' | sed 's/\/summary.txt//g' > summary_vcfeval_SD.tsv
-cat text_to_replace.tsv | xargs -n2 -P1 bash -c 'echo $0; sed -i "s/$0/$1/g" summary_vcfeval_SD.tsv'
-```
-
 ## 3. cHiFi unrelated dataset
 
 ```bash
