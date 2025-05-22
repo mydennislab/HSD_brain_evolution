@@ -655,7 +655,7 @@ p_value <- phyper(
 
 p_value
 
-### 13.2. Human_duplicated genes enrichment ------------------------------------
+### 13.2. Human duplicated genes enrichment ------------------------------------
 
 N <- dim(all_filt)[1] # total population size (total protein coding genes and unprocessed pseudogenes)
 K <- all_filt %>% filter(SH_SY5Y>=1) %>% dim() %>% .[1] # total successes in population (total protein coding genes and unprocessed pseudogenes expressed)
@@ -672,7 +672,7 @@ p_value <- phyper(
 
 p_value
 
-### 13.3. Human_duplicated CN-constrained genes enrichment ---------------------
+### 13.3. Human duplicated CN-constrained genes enrichment ---------------------
 
 N <- dim(all_filt)[1] # total population size (total protein coding genes and unprocessed pseudogenes)
 K <- all_filt %>% filter(SH_SY5Y>=1) %>% dim() %>% .[1] # total successes in population (total protein coding genes and unprocessed pseudogenes expressed)
@@ -688,7 +688,6 @@ p_value <- phyper(
 )
 
 p_value
-
 
 ## 14. Tissue expression comparison --------------------------------------------
 
@@ -758,90 +757,3 @@ combined_counts %>%
   xlab("Tissues") +
   ylab("No. genes expressed (TPM>1)")
 ggsave("boxplot_expression.pdf", width = 10)
-
-# Brainspan Geschwind WGCNA genes ----------------------------------------------
-
-# Geschwind filtered genes that were present at an RPKM of 1 in 80% of the 
-# samples from at least one neocortical region at one major temporal epoch, 
-# resulting in 22,084 coding and non-coding transcripts.
-
-# We filtered Brainspain genes focusing on Geshwind samples using only prenatal
-# samples from the frontal cortex (DFC + VFC + MFC + OFC)
-
-brainspan <-
-  fread("tpms/allSamples_brainspan_TPM.tsv") %>%
-  select(!c(median, mean, sd)) %>%
-  pivot_longer(-gene, names_to = "run", values_to = "counts")
-
-metadata_brainspan <- 
-  read.table(file = "metadata/Brainspan_metadata.txt", sep="\t", fill=TRUE, 
-             strip.white=TRUE, quote="", header=TRUE, na.strings=c("","NA"))
-
-brainspan_wgcna <-
-  left_join(brainspan, metadata_brainspan, by = c("run" = "run")) %>%
-  filter(geschwind == "yes") %>%
-  filter(body_site %in% c("DFC", "VFC", "MFC", "OFC")) %>%
-  filter(developmental_stage %in% c("Early prenatal", "Early mid-prenatal", "Late mid-prenatal")) %>%
-  dplyr::select(gene, run, counts, developmental_stage, body_site) 
-
-genes_wgcna <- brainspan_wgcna %>%
-  group_by(gene, developmental_stage, body_site) %>%
-  summarize(percent_over_1 = sum(counts > 1)/n()) %>%
-  filter(percent_over_1 >= 0.8) %>%
-  pull(gene) %>% unique()
-
-write(genes_wgcna, "../03_WGCNA/BrainSpan/brainspan_wgcna_genes.txt", ncolumns = 1)
-
-# FRMP2 ------------------------------------------------------------------------
-
-library(janitor)
-
-tpms <- read.table(file = 'TPMs/allSamples_brainspan_TPM.tsv', sep = '\t', header = TRUE)
-tpms <- t(tpms)
-tpms2 <- row_to_names(tpms, row_number = 1)
-tpms2 <- as.data.frame(tpms2)
-
-frmpd2_exp <- tpms2['CHM13_G0006295'] %>% 
-  rownames_to_column('run') %>% 
-  mutate(run = factor(run, levels = order)) %>%
-  mutate(CHM13_G0006295 = as.numeric(CHM13_G0006295))
-frmpd2_exp <- left_join(frmpd2_exp, traits, by = "run") %>%
-  filter(developmental_stage != "Adulthood" & 
-           developmental_stage != "Adolescence" &
-           developmental_stage != "Early childhood" &
-           developmental_stage != "Late childhood") %>% 
-  mutate(run = factor(run, levels = order)) 
-
-ggplot(frmpd2_exp, aes(x = run, y = CHM13_G0006295, color = developmental_stage)) +
-  geom_point() + facet_wrap(~ site) +
-  theme(axis.text.x = element_blank(), axis.ticks.x=element_blank())
-
-
-fam72_exp <- tpms2['CHM13_G0004511'] %>% 
-  rownames_to_column('run') %>% 
-  mutate(run = factor(run, levels = order)) %>%
-  mutate(CHM13_G0006295 = as.numeric(CHM13_G0004511))
-fam72_exp <- left_join(fam72_exp, traits, by = "run") %>%
-  filter(developmental_stage != "Adulthood" & 
-           developmental_stage != "Adolescence" &
-           developmental_stage != "Early childhood" &
-           developmental_stage != "Late childhood") %>% 
-  mutate(run = factor(run, levels = order)) 
-
-ggplot(fam72_exp, aes(x = run, y = CHM13_G0006295, color = developmental_stage)) +
-  geom_point() + facet_wrap(~ site) +
-  theme(axis.text.x = element_blank(), axis.ticks.x=element_blank())
-
-frmpd2_exp <- norm.counts['CHM13_G0006295'] %>% 
-  rownames_to_column('run') %>% 
-  mutate(run = factor(run, levels = order)) 
-frmpd2_exp <- left_join(frmpd2_exp, traits, by = "run") %>%
-  filter(developmental_stage != "Adulthood" & 
-           developmental_stage != "Adolescence" &
-           developmental_stage != "Early childhood" &
-           developmental_stage != "Late childhood") %>% 
-  mutate(run = factor(run, levels = order)) 
-
-ggplot(frmpd2_exp, aes(x = run, y = CHM13_G0006295, color = developmental_stage)) +
-  geom_point() + facet_wrap(~ site) +
-  theme(axis.text.x = element_blank(), axis.ticks.x=element_blank())
