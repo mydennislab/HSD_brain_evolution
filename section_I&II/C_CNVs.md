@@ -12,20 +12,6 @@ ENA projects associated with the 1KGP data are the following:
 
 The FTP site contains complete metadata about both dataset (2,504 and 698 samples).
 
-**HGDP**
-
-High coverage sequencing of the Human Genome Diversity Project (HGDP) Cell Line Panel samples on the Illumina X10.
-
-- 35x coverage of 929 samples described in Bergstrom et al. 2020
-- Raw read alignments are available from the European Nucleotide Archive under study accession no. [PRJEB6463](https://www.ebi.ac.uk/ena/browser/view/PRJEB6463)
-- Metadata available here http://ftp.1000genomes.ebi.ac.uk/vol1/ftp/data_collections/HGDP/
-
-**GIAB**
-
-All GIAB metadata is here: https://github.com/genome-in-a-bottle
-
-Data indexes are located here: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_indexes/
-
 ### 1.2 Data download and QC
 
 ```bash
