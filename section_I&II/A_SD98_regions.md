@@ -559,5 +559,3 @@ bedtools intersect -wao -a sd98_genes.bed -b hg38_false_dups.chm13_coords.bed \
 | bedtools groupby -g 1,2,3,4 -c 5 -o sum \
 > sd98_genes.false_dups.bed
 ```
-
-> Medically relevant gene coordinates extracted from https://raw.githubusercontent.com/usnistgov/cmrg-benchmarkset-manuscript/refs/heads/master/data/gene_coords/unsorted/GRCh38_mrg_full_gene.bed. Original paper: https://www.nature.com/articles/s41587-021-01158-1
