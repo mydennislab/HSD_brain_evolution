@@ -50,35 +50,8 @@ sessionInfo()
 
 # WGCNA expression analysis of SD-98 genes in CORTECON dataset -----------------
 
-# Resources used in this analysis:
-# - https://www.youtube.com/watch?v=gYE59uEMXT4&ab_channel=Bioinformagician
-# - https://www.youtube.com/watch?v=mzXIxjPr_Mc&t=514s&ab_channel=Bioinformagician
-# - https://bioinformaticsworkbook.org/tutorials/wgcna.html
-# - https://rstudio-pubs-static.s3.amazonaws.com/687551_ed469310d8ea4652991a2e850b0018de.html
-# 
 # The CORTECON dataset (https://pubmed.ncbi.nlm.nih.gov/24991954/) includes 
 # transcriptomic data from human cerebral cortex at different developmental time points.
-# 
-# In this analysis, we sought to identify genes co-expressed during human brain 
-# development building an unsupervised co-expression network with the WGCNA 
-# package. In particular, we aimed to answer the following questions:
-# 1. Are there any modules with enrichment of duplicated genes? If so, what are
-#    GO terms for those modules
-# 2. Can we pull out a module that has clear connections with proliferation or 
-#    autism (based on known genes) and then generate a nice network image of 
-#    this/these, highlighting duplicated genes that would be worth following up?
-
-# The overall pipeline involves the following steps:
-# - Quantification of expression using Salmon/tximport. 
-# - Importantly, to perform between sample normalization we need to use the raw 
-#   counts instead of TPM.
-# - Between sample normalization with DESeq2's variance stabilizing transformation.
-# - Building network using WGCNA.
-# - Identification of modules enriched in duplicated genes and GO 
-#   over-representation ("guilt by association")
-# - Using markers to identify modules associated with neural proliferation and 
-#   autism, and look for SD-98 genes in these modules. 
-# - Generate network plot.
 
 ## 1. Loading files ------------------------------------------------------------
 
@@ -843,7 +816,7 @@ for (row in 1:nrow(module_genes.hotspots.counts)) {
 }
 module_genes.hotspots.counts$pvals <- round(hypergeometric.pvals, 5)
 module_genes.hotspots.counts %>% filter(pvals <= 0.05)
-module_genes.markers.counts %>% fwrite("results/Hotspots_enrichment.tsv", sep = "\t")
+module_genes.hotspots.counts %>% fwrite("results/Hotspots_enrichment.tsv", sep = "\t")
 
 ## 5. Visualizing modules of interest ------------------------------------------
 
