@@ -26,14 +26,6 @@ All GIAB metadata is here: https://github.com/genome-in-a-bottle
 
 Data indexes are located here: https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data_indexes/
 
-```bash
-cd /share/dennislab/users/dcsoto/ms_hsd/copy-number/metadata
-
-for pop in ACB ASW ESN GWD LWK MSL YRI; do
-    grep -w ${pop} 1kgp_2504.all_pops.tsv > 1kgp_2504.AFR_${pop}.tsv
-done
-```
-
 ### 1.2 Data download and QC
 
 ```bash
@@ -131,7 +123,7 @@ input=data_capture outdir=results_w500 distance=1 window=500 \
 -p -j 24
 ```
 
-#### 2.1.2 archaics
+#### 2.1.2 Archaics
 
 ```bash
 conda activate variants # python3 with pandas and argparse, and samtools + bedToBigBed
