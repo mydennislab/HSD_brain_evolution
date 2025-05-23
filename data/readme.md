@@ -9,3 +9,5 @@ This folder contains processed data and intermediate files included in the manus
 **Zebrafish morphometrics:** This includes raw images from VAST runs.
 
 **Zebrafish transcriptomes:** This includes Seurat, DEGs, and GO terms from scRNA-seq analysis of HSD zebrafish models.
+
+**QuicK-mer2:** This includes QuicK-mer2 CN estimates for the 1000 Genomes Project and the Simons Simplex Collection.
